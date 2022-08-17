@@ -35,6 +35,16 @@ public class GameController : MonoBehaviour
         return instance.player;
     }
 
+    public static void OpenDoors()
+    {
+        FindObjectOfType<Door>().Open();
+    }
+
+    public static void NextLevel()
+    {
+        Debug.LogWarning("NEXT LEVEL");
+    }
+
     public static void GameOver()
     {
         Time.timeScale = 0;

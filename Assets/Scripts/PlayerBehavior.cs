@@ -11,7 +11,8 @@ public class PlayerBehavior : CharacterBehavior
     private Transform crosshair;
     private float currentAttackCooldown;
     private bool invulnerable; public bool Invulnerable { get => invulnerable; }
-    private List<SpriteRenderer> spriteRenderers;
+    private List<SpriteRenderer> renderers;
+    private bool canControl = true;
 
 
 
@@ -24,7 +25,7 @@ public class PlayerBehavior : CharacterBehavior
     {
         base.Awake();
 
-        spriteRenderers = new List<SpriteRenderer>(GetComponentsInChildren<SpriteRenderer>());
+        renderers = new List<SpriteRenderer>(GetComponentsInChildren<SpriteRenderer>());
 
         crosshair = GameObject.Find("Crosshair").transform;
         currentWeapon = WeaponType.SWORD;
@@ -32,6 +33,10 @@ public class PlayerBehavior : CharacterBehavior
 
     private void Update()
     {
+        currentAttackCooldown += Time.deltaTime;
+
+        if (!canControl) return;
+
         Vector2 moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         if (moveInput != Vector2.zero) { Move(moveInput); }
         else { animator.SetBool("moving", false); }
@@ -47,8 +52,6 @@ public class PlayerBehavior : CharacterBehavior
         {
             crosshair.position = mousePos;
         }
-        
-        currentAttackCooldown += Time.deltaTime;
     }
 
     private void Attack(Vector2 clickPosition)
@@ -89,13 +92,42 @@ public class PlayerBehavior : CharacterBehavior
 
         for (int i = 0; i < 15; i++)
         {
-            foreach (SpriteRenderer sr in spriteRenderers) sr.color = Color.clear;
+            foreach (SpriteRenderer sr in renderers) sr.color = Color.clear;
             yield return new WaitForSeconds(0.1f);
-            foreach (SpriteRenderer sr in spriteRenderers) sr.color = Color.white;
+            foreach (SpriteRenderer sr in renderers) sr.color = Color.white;
             yield return new WaitForSeconds(0.1f);
         }
 
         invulnerable = false;
         OnPlayerInvulnerable?.Invoke(false);
+    }
+
+    public void EnterDoor(Vector2 doorPosition)
+    {
+        StartCoroutine(EnterDoorRoutine(doorPosition));
+    }
+
+    private IEnumerator EnterDoorRoutine(Vector2 doorPosition)
+    {
+        canControl = false;
+        
+        Stop();
+        yield return new WaitForSeconds(1f);
+
+        MoveSpeed = 1f;
+        GetComponent<Collider2D>().enabled = false;
+        Vector2 selfPosition = transform.position;
+        Vector2 direction = (doorPosition - selfPosition).normalized;
+        float time = 0f;
+        while (time < 2f)
+        {
+            time += Time.deltaTime;
+
+            Move(direction);
+
+            yield return null;
+        }
+
+        GameController.GameOver(); // change to GameController.NextLevel()
     }
 }

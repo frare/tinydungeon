@@ -101,7 +101,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 5
   moveSpeed: 5
+  mainRenderer: {fileID: 7744401392663984796}
   collisionDamage: 1
+  slowMultiplier: 3
 --- !u!114 &7744401392023803436
 MonoBehaviour:
   m_ObjectHideFlags: 0

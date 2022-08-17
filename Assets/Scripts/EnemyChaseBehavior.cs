@@ -35,7 +35,7 @@ public class EnemyChaseBehavior : EnemyBehavior
     {
         base.Spawn(position);
 
-        pathfinder.maxSpeed = currentMoveSpeed;
+        pathfinder.maxSpeed = CurrentMoveSpeed;
         setter.target = player.Invulnerable ? this.transform : player.transform;
         animator.SetBool("moving", true);
 
@@ -44,6 +44,7 @@ public class EnemyChaseBehavior : EnemyBehavior
 
     protected virtual void OnPlayerInvulnerable(bool invulnerable)
     {
+        Stop();
         setter.target = invulnerable ? this.transform : GameController.GetPlayer().transform;
     }
 }

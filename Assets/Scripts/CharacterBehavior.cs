@@ -5,27 +5,49 @@ using UnityEngine;
 public class CharacterBehavior : MonoBehaviour
 {
     [SerializeField] protected float health;
-    [SerializeField] protected float moveSpeed;
+    [SerializeField] private float moveSpeed;
+    [SerializeField] private SpriteRenderer mainRenderer;
 
     protected float currentHealth;
-    protected float currentMoveSpeed;
+    private float currentMoveSpeed;
     protected Rigidbody2D rb;
     protected Animator animator;
     private List<Material> materials;
+
+    protected float MoveSpeed
+    {
+        get { return moveSpeed; }
+        set
+        {
+            moveSpeed = value;
+            currentMoveSpeed = moveSpeed;  
+            animator.speed = currentMoveSpeed / 2;
+        }
+    }
+
+    protected float CurrentMoveSpeed
+    {
+        get { return currentMoveSpeed; }
+        set
+        {
+            currentMoveSpeed = value;
+            animator.speed = currentMoveSpeed / 2;
+        }
+    }
 
 
 
     protected virtual void Awake()
     {
-        currentHealth = health;
-        currentMoveSpeed = moveSpeed;
-
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponentInChildren<Animator>();
         materials = new List<Material>();
         foreach (SpriteRenderer sprite in GetComponentsInChildren<SpriteRenderer>()) 
             foreach (Material mat in sprite.materials) 
                 materials.Add(mat);
+
+        currentHealth = health;
+        CurrentMoveSpeed = moveSpeed;
     }
 
     protected virtual void Move(Vector2 direction)
@@ -35,7 +57,16 @@ public class CharacterBehavior : MonoBehaviour
         else if (direction.x < 0) transform.localScale = new Vector3(-1, 1, 1);
 
         animator.SetBool("moving", true);
-        animator.speed = currentMoveSpeed / 2;
+    }
+
+    protected virtual void LateUpdate()
+    {
+        mainRenderer.sortingOrder = (int)(transform.position.y * -100);
+    }
+
+    protected virtual void Stop()
+    {
+        animator.SetBool("moving", false);
     }
 
     public virtual void TakeDamage(float amount)

@@ -28,7 +28,7 @@ public class EnemyBehavior : CharacterBehavior
     {
         player = GameController.GetPlayer();
         currentHealth = health;
-        currentMoveSpeed = moveSpeed;
+        CurrentMoveSpeed = MoveSpeed;
     }
 
     private void OnTriggerStay2D(Collider2D other)

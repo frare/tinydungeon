@@ -32,7 +32,7 @@ public class EnemyController : MonoBehaviour
 
         if (instance.enemyDefeatedCount >= instance.waves[instance.currentWave].enemies.Count) 
         {
-            if (instance.currentWave + 1 >= instance.waves.Count) GameController.GameOver();
+            if (instance.currentWave + 1 >= instance.waves.Count) GameController.OpenDoors();
             else SpawnNextWave();
         }
     }

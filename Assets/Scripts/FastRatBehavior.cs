@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class FastRatBehavior : EnemyChaseBehavior
 {
+    [SerializeField] private float slowMultiplier;
+
     protected Coroutine slowdown;
 
 
@@ -22,9 +24,8 @@ public class FastRatBehavior : EnemyChaseBehavior
     protected IEnumerator Slowdown()
     {
         pathfinder.canMove = false;
-        currentMoveSpeed = moveSpeed / 3;
-        pathfinder.maxSpeed = currentMoveSpeed;
-        animator.speed = currentMoveSpeed / 2;
+        CurrentMoveSpeed = MoveSpeed / slowMultiplier;
+        pathfinder.maxSpeed = CurrentMoveSpeed;
 
         rb.AddForce((this.transform.position - player.transform.position).normalized * 5, ForceMode2D.Impulse);
 
@@ -34,9 +35,8 @@ public class FastRatBehavior : EnemyChaseBehavior
 
         yield return new WaitForSeconds(2f);
 
-        currentMoveSpeed = moveSpeed;
-        pathfinder.maxSpeed = currentMoveSpeed;
-        animator.speed = currentMoveSpeed / 2;
+        MoveSpeed = MoveSpeed;
+        pathfinder.maxSpeed = CurrentMoveSpeed;
     }
 
     protected override void Reset()
@@ -44,8 +44,6 @@ public class FastRatBehavior : EnemyChaseBehavior
         base.Reset();
 
         pathfinder.canMove = true;
-        currentMoveSpeed = moveSpeed;
-        pathfinder.maxSpeed = currentMoveSpeed;
-        animator.speed = currentMoveSpeed / 2;
+        pathfinder.maxSpeed = CurrentMoveSpeed;
     }
 }
