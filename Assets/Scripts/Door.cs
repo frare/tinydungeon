@@ -14,7 +14,7 @@ public class Door : MonoBehaviour
 
     private void Awake()
     {
-        foreach (SpriteRenderer renderer in renderers) renderer.sortingOrder = (int)(renderer.transform.position.y * -100);
+        // foreach (SpriteRenderer renderer in renderers) renderer.sortingOrder = (int)(renderer.transform.position.y * -100);
     }
 
     public void Open()
